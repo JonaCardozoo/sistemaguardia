@@ -12,7 +12,7 @@ type Status = 'Pendiente' | 'En seguimiento' | 'Resuelto'
 type View = 'Inicio' | 'Guardia' | 'Relevo' | 'Historial' | 'Personas'
 type Person = { id: string; name: string; eri: string; location: string; device: string; status: string }
 type Action = { id: number; label: string; time: string; operator: string }
-type Event = { id: number; dbId?: string; personId?: string; time: string; type: string; eri: string; person: string; location: string; device: string; status: Status; lastAction: string; operator: string; bodyDetection?: string; communication?: string; statement?: string; actions: Action[]; generatedText: string; notes?: string }
+type Event = { id: number; dbId?: string; guardId?: string; personId?: string; time: string; type: string; eri: string; person: string; location: string; device: string; status: Status; lastAction: string; operator: string; bodyDetection?: string; communication?: string; statement?: string; actions: Action[]; generatedText: string; notes?: string }
 type GuardMember = ApiGuardMember
 
 const people: Person[] = []
@@ -151,8 +151,9 @@ export default function DashboardClient() {
   }, [sessionPending, session?.user, router])
 
   const liveEvents = useMemo(() => events.map((event) => enrichEvent(event, peopleState)), [events, peopleState])
-  const filtered = useMemo(() => liveEvents.filter((e) => (filter === 'Todos' || e.status === filter) && `${e.eri} ${e.person} ${e.device} ${e.location} ${e.type}`.toLowerCase().includes(query.toLowerCase())), [liveEvents, filter, query])
-  const counts = { Pendiente: liveEvents.filter((e) => e.status === 'Pendiente').length, 'En seguimiento': liveEvents.filter((e) => e.status === 'En seguimiento').length, Resuelto: liveEvents.filter((e) => e.status === 'Resuelto').length }
+  const currentGuardEvents = useMemo(() => activeGuardId ? liveEvents.filter((event) => event.guardId === activeGuardId) : [], [activeGuardId, liveEvents])
+  const filtered = useMemo(() => currentGuardEvents.filter((e) => (filter === 'Todos' || e.status === filter) && `${e.eri} ${e.person} ${e.device} ${e.location} ${e.type}`.toLowerCase().includes(query.toLowerCase())), [currentGuardEvents, filter, query])
+  const counts = { Pendiente: currentGuardEvents.filter((e) => e.status === 'Pendiente').length, 'En seguimiento': currentGuardEvents.filter((e) => e.status === 'En seguimiento').length, Resuelto: currentGuardEvents.filter((e) => e.status === 'Resuelto').length }
   const activePeople = peopleState.filter((p) => `${p.name} ${p.eri} ${p.device} ${p.location}`.toLowerCase().includes(personQuery.toLowerCase()) && p.status === 'ACTIVO')
   const selectedEventView = selectedEvent ? enrichEvent(selectedEvent, peopleState) : null
 

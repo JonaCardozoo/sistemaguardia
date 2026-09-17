@@ -74,15 +74,13 @@ def get_dashboard(
     active = db.scalar(
         select(Guard).where(Guard.status == "active").order_by(Guard.created_at.desc())
     )
-    events: list[GuardEvent] = []
-    if active:
-        events = list(
-            db.scalars(
-                select(GuardEvent)
-                .where(GuardEvent.guard_id == active.id)
-                .order_by(GuardEvent.created_at.desc())
-            )
+    # El dashboard recibe el historial completo, incluyendo guardias cerradas.
+    # La interfaz filtra los eventos de la guardia activa para el resumen.
+    events = list(
+        db.scalars(
+            select(GuardEvent).order_by(GuardEvent.created_at.desc())
         )
+    )
     people = list(db.scalars(select(Person).order_by(Person.created_at.desc())))
 
     return DashboardOut(

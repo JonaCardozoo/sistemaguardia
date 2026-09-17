@@ -238,6 +238,7 @@ export function mapEvent(row: ApiEvent) {
     ...data,
     id: clientId,
     dbId: row.id,
+    guardId: row.guard_id,
     actions: Array.isArray(data.actions) ? data.actions : [],
   }
 }
