@@ -153,6 +153,7 @@ export default function DashboardClient() {
   const liveEvents = useMemo(() => events.map((event) => enrichEvent(event, peopleState)), [events, peopleState])
   const currentGuardEvents = useMemo(() => activeGuardId ? liveEvents.filter((event) => event.guardId === activeGuardId) : [], [activeGuardId, liveEvents])
   const filtered = useMemo(() => currentGuardEvents.filter((e) => (filter === 'Todos' || e.status === filter) && `${e.eri} ${e.person} ${e.device} ${e.location} ${e.type}`.toLowerCase().includes(query.toLowerCase())), [currentGuardEvents, filter, query])
+  const visibleEvents = filtered
   const counts = { Pendiente: currentGuardEvents.filter((e) => e.status === 'Pendiente').length, 'En seguimiento': currentGuardEvents.filter((e) => e.status === 'En seguimiento').length, Resuelto: currentGuardEvents.filter((e) => e.status === 'Resuelto').length }
   const activePeople = peopleState.filter((p) => `${p.name} ${p.eri} ${p.device} ${p.location}`.toLowerCase().includes(personQuery.toLowerCase()) && p.status === 'ACTIVO')
   const selectedEventView = selectedEvent ? enrichEvent(selectedEvent, peopleState) : null
