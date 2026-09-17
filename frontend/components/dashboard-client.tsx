@@ -135,7 +135,12 @@ export default function DashboardClient() {
           setChiefName('')
           setGuardTeam([])
         }
-        setEvents(data.events.map((row) => mapEvent(row) as Event))
+        // No borres el historial local si una actualización intermedia devuelve eventos vacíos
+        // mientras se cierra o inicia una guardia. El próximo refresco completo lo reemplazará.
+        setEvents((current) => {
+          const nextEvents = data.events.map((row) => mapEvent(row) as Event)
+          return nextEvents.length > 0 || current.length === 0 ? nextEvents : current
+        })
         setPeopleState(data.people.map(mapPerson))
       } catch {
         if (!cancelled) router.replace('/sign-in')
