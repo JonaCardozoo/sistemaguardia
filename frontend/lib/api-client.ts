@@ -30,6 +30,8 @@ export type ApiEvent = {
   id: string
   guard_id: string
   event_data: Record<string, unknown>
+  created_at?: string | null
+  updated_at?: string | null
 }
 
 export type ApiPerson = {
@@ -239,6 +241,8 @@ export function mapEvent(row: ApiEvent) {
     id: clientId,
     dbId: row.id,
     guardId: row.guard_id,
+    createdAt: row.created_at ?? null,
+    updatedAt: row.updated_at ?? null,
     actions: Array.isArray(data.actions) ? data.actions : [],
   }
 }
