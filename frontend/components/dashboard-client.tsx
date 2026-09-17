@@ -150,6 +150,11 @@ export default function DashboardClient() {
     }
   }, [sessionPending, session?.user, router])
 
+  // Al finalizar una guardia, conservar el historial visible y la pestaña actual.
+  useEffect(() => {
+    if (guardClosed && view !== 'Historial') setView('Historial')
+  }, [guardClosed, view])
+
   const liveEvents = useMemo(() => events.map((event) => enrichEvent(event, peopleState)), [events, peopleState])
   const currentGuardEvents = useMemo(() => activeGuardId ? liveEvents.filter((event) => event.guardId === activeGuardId) : [], [activeGuardId, liveEvents])
   const filtered = useMemo(() => currentGuardEvents.filter((e) => (filter === 'Todos' || e.status === filter) && `${e.eri} ${e.person} ${e.device} ${e.location} ${e.type}`.toLowerCase().includes(query.toLowerCase())), [currentGuardEvents, filter, query])
