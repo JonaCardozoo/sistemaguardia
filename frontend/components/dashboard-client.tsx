@@ -96,7 +96,6 @@ export default function DashboardClient() {
   const [personQuery, setPersonQuery] = useState('')
   const [mobileNav, setMobileNav] = useState(false)
   const [summaryOpen, setSummaryOpen] = useState(false)
-  const [guardClosed, setGuardClosed] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [guardDate, setGuardDate] = useState(argentinaDateInput())
@@ -154,11 +153,6 @@ export default function DashboardClient() {
       cancelled = true
     }
   }, [sessionPending, session?.user, router])
-
-  // Al finalizar una guardia, conservar el historial visible y la pestaña actual.
-  useEffect(() => {
-    if (guardClosed && view !== 'Historial') setView('Historial')
-  }, [guardClosed, view])
 
   const liveEvents = useMemo(() => events.map((event) => enrichEvent(event, peopleState)), [events, peopleState])
   const currentGuardEvents = useMemo(() => activeGuardId ? liveEvents.filter((event) => event.guardId === activeGuardId) : [], [activeGuardId, liveEvents])
