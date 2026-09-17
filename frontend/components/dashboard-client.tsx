@@ -139,7 +139,9 @@ export default function DashboardClient() {
         // mientras se cierra o inicia una guardia. El próximo refresco completo lo reemplazará.
         setEvents((current) => {
           const nextEvents = data.events.map((row) => mapEvent(row) as Event)
-          return nextEvents.length > 0 || current.length === 0 ? nextEvents : current
+          // Al entrar al historial, la respuesta del servidor es la fuente de verdad.
+          // En las demás vistas conservamos el estado local si hay una respuesta transitoria vacía.
+          return view === 'Historial' || nextEvents.length > 0 || current.length === 0 ? nextEvents : current
         })
         setPeopleState(data.people.map(mapPerson))
       } catch {
@@ -153,7 +155,7 @@ export default function DashboardClient() {
     return () => {
       cancelled = true
     }
-  }, [sessionPending, session?.user, router])
+  }, [sessionPending, session?.user, router, view])
 
   const liveEvents = useMemo(() => events.map((event) => enrichEvent(event, peopleState)), [events, peopleState])
   const currentGuardEvents = useMemo(() => activeGuardId ? liveEvents.filter((event) => event.guardId === activeGuardId) : [], [activeGuardId, liveEvents])
