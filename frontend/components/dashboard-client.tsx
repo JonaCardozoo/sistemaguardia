@@ -102,6 +102,7 @@ export default function DashboardClient() {
   const [guardStart, setGuardStart] = useState('19:00')
   const [guardEnd, setGuardEnd] = useState('07:00')
   const [guardSaved, setGuardSaved] = useState(false)
+  const [guardClosed, setGuardClosed] = useState(false)
   const [chiefName, setChiefName] = useState('')
   const [guardTeam, setGuardTeam] = useState<GuardMember[]>([])
 
